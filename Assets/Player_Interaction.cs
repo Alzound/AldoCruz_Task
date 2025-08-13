@@ -6,10 +6,12 @@ public class Player_Interaction : MonoBehaviour
     public bool isInteractable;
     IInteraction interactable;
 
+    //Is going to be more cost effective to use trigger colliders for interaction detection.
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("NPC"))
         {
+            //I need to add the change of the UI text here.     
             isInteractable = true;
             GetInfoOfContact(collision.GetComponent<IInteraction>());
         }

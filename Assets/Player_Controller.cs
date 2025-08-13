@@ -108,7 +108,6 @@ public class Player_Controller : MonoBehaviour
     {
         if (context.performed && isGrounded)
         {
-            // Conserva velocidad horizontal; solo impulsa en Y
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isJumping = true;
         }
