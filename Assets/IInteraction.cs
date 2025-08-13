@@ -1,10 +1,7 @@
 public interface IInteraction
 {
-    public string UiText { get; set; }
-    public bool CanInteract { get; set; }
+    string InteractionMessage { get; }
 
-    void InteractAction();
-
-    void InteractText(string text); 
+    void Interact();
 
 }
