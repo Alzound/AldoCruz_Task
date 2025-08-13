@@ -6,13 +6,21 @@ public class Player_Interaction : MonoBehaviour
     public bool isInteractable;
     IInteraction interactable;
 
+    [Header("Canvas PopUp")]
+    [SerializeField] private Player_UIPopUp playerPopUp;
+
+    private void Awake()
+    {
+        playerPopUp = GetComponentInChildren<Player_UIPopUp>();
+    }
+
+
     //Is going to be more cost effective to use trigger colliders for interaction detection.
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("NPC"))
-        {
-            Debug.Log("Player is in contact with an NPC or interactable object.");
-            //I need to add the change of the UI text here.     
+        { 
+            playerPopUp.TooglePopUpActive();
             isInteractable = true;
             GetInfoOfContact(collision.GetComponent<IInteraction>());
         }
@@ -22,6 +30,7 @@ public class Player_Interaction : MonoBehaviour
     {
         isInteractable = false;
         GetInfoOfContact(null);
+        playerPopUp.TooglePopUpFalse();
     }
 
     public void GetInfoOfContact(IInteraction interactObject)

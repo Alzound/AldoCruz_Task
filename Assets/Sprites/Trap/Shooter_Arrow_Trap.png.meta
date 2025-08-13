@@ -55,7 +55,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -284,7 +284,14 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Shooter_Arrow_Trap_0: 5664317421379508311
+      Shooter_Arrow_Trap_1: 2664446938899218892
+      Shooter_Arrow_Trap_2: -3242719409127367225
+      Shooter_Arrow_Trap_3: 8452858929953208293
+      Shooter_Arrow_Trap_4: 9024367733721590576
+      Shooter_Arrow_Trap_5: 3996180061049761737
+      Shooter_Arrow_Trap_6: 2426697223069408470
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
