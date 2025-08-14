@@ -24,22 +24,22 @@ public class Player_Controller : MonoBehaviour
     public string currentState;
     private const string IDLE_RIGHT = "Player_IdleRight", IDLE_LEFT = "Player_IdleLeft";
     private const string RUN_RIGHT = "Player_RunRight", RUN_LEFT = "Player_RunLeft";
-    private const string JUMP = "Player_Jump";
-    private const string ATTACK_RIGHT = "Player_AttackRight", ATTACK_LEFT = "Player_AttackLeft";
 
     [Header("Basic properties")]
     float currentSpeed;
     [SerializeField] float normalSpeed = 5f;
     [SerializeField] float runSpeed = 8f;
+    Vector2 dir;
 
     [Header("Jump properties")]
     [SerializeField] private float jumpForce = 7f;
-    [SerializeField] private Transform groundCheck;    
-    [SerializeField] private float groundCheckRadius = 0.2f; 
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
     private bool isGrounded;
 
-    Vector2 dir;
+    private int facing = 1;
+    private const float X_DEADZONE = 0.01f;
 
     private void Awake()
     {
@@ -57,6 +57,8 @@ public class Player_Controller : MonoBehaviour
         interact = playerInput.actions["Interact"];
         pause = playerInput.actions["Pause"];
         #endregion
+
+        currentSpeed = normalSpeed;
     }
 
     private void OnEnable()
@@ -68,7 +70,7 @@ public class Player_Controller : MonoBehaviour
         run.performed += RunAction;
         run.canceled += RunAction;
 
-        jump.performed += JumpAction;  
+        jump.performed += JumpAction;
 
         interact.performed += InteractAction;
         interact.canceled += InteractAction;
@@ -102,22 +104,34 @@ public class Player_Controller : MonoBehaviour
     {
         if (context.performed)
         {
-            dir = new Vector2(context.ReadValue<Vector2>().x, 0f);
-            if(dir.x > 0)
+            float x = context.ReadValue<Vector2>().x;
+            dir = new Vector2(x, 0f);
+
+            if (Mathf.Abs(x) < X_DEADZONE)
             {
-                ChangeAnimationState(RUN_RIGHT);
+                isMoving = false;
+                ChangeAnimationState(facing > 0 ? IDLE_RIGHT : IDLE_LEFT);
             }
             else
             {
-                ChangeAnimationState(RUN_LEFT);
+                if (x > 0f)
+                {
+                    ChangeAnimationState(RUN_RIGHT);
+                    facing = 1;
+                }
+                else
+                {
+                    ChangeAnimationState(RUN_LEFT);
+                    facing = -1;
+                }
+                isMoving = true;
             }
 
             currentSpeed = isRunning ? runSpeed : normalSpeed;
-            isMoving = dir != Vector2.zero;
         }
         else if (context.canceled)
         {
-
+            ChangeAnimationState(facing > 0 ? IDLE_RIGHT : IDLE_LEFT);
             dir = Vector2.zero;
             isMoving = false;
         }
@@ -162,14 +176,12 @@ public class Player_Controller : MonoBehaviour
 
     private void PauseAction(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if (context.performed)
         {
             var PM = Pause_Menu.instance;
-            PM.gameObject.SetActive(true); 
-            Time.timeScale = 0f; 
+            PM.gameObject.SetActive(true);
+            Time.timeScale = 0f;
         }
-        
-
     }
     #endregion
 
@@ -181,7 +193,7 @@ public class Player_Controller : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckRadius, groundLayer);
         isGrounded = hit.collider != null;
 
-        if (isGrounded) isJumping = false; 
+        if (isGrounded) isJumping = false;
     }
 
     private void OnDrawGizmosSelected()
@@ -194,8 +206,8 @@ public class Player_Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
-        GroundCheck();      
-        MovementUpdate();   
+        GroundCheck();
+        MovementUpdate();
     }
 
     #region Animation
@@ -213,11 +225,11 @@ public class Player_Controller : MonoBehaviour
     {
         switch (index)
         {
-            case 0:
-                OnUseItem1(); 
-                break;
             case 1:
-                OnUseItem2(); 
+                OnUseItem1();
+                break;
+            case 2:
+                OnUseItem2();
                 break;
             default:
                 Debug.LogWarning("Invalid item index: " + index);
@@ -227,6 +239,7 @@ public class Player_Controller : MonoBehaviour
 
     private void OnUseItem1()
     {
+        Debug.Log("Item 1 used: Speed Boost");
         normalSpeed = 12f;
         runSpeed = 15f;
         StartCoroutine(ReturnValuesToNormal(15f, 1));
@@ -234,16 +247,17 @@ public class Player_Controller : MonoBehaviour
 
     private void OnUseItem2()
     {
-        jumpForce = 15f;    
+        jumpForce = 15f;
         StartCoroutine(ReturnValuesToNormal(10f, 2));
     }
 
     IEnumerator ReturnValuesToNormal(float duration, int index)
     {
         yield return new WaitForSeconds(duration);
-        switch(index)
+        switch (index)
         {
             case 1:
+  
                 normalSpeed = 5f;
                 runSpeed = 8f;
                 break;
