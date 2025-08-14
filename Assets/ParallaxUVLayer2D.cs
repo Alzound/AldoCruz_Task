@@ -12,19 +12,26 @@ public class ParallaxUVLayer2D : MonoBehaviour
     [Range(-2f, 2f)] public float yStrength = 0f;
 
     [Header("ST del shader (_MainTex_ST)")]
-    public Vector2 tiling = Vector2.one;   // escala UV
-    public Vector2 offset = Vector2.zero;  // offset base manual
-    public Vector2 scrollSpeed = Vector2.zero; // auto-scroll opcional
+    public Vector2 tiling = Vector2.one;          // escala UV
+    public Vector2 offset = Vector2.zero;         // offset base manual
+    public Vector2 scrollSpeed = Vector2.zero;    // auto-scroll opcional
 
     private SpriteRenderer sr;
     private MaterialPropertyBlock mpb;
     private int _MainTex_ST;
 
     private Vector3 camStart;
-    private Vector2 runningOffset;
-    private float widthWorld, heightWorld;
+    private Vector2 runningOffset;                // acumulado por scrollSpeed
+    private float widthWorld, heightWorld;        // tamaño del sprite en mundo (con escala)
 
-    void Reset() { sr = GetComponent<SpriteRenderer>(); }
+    // --- NUEVO: asegura inicialización donde sea necesaria ---
+    private void EnsureInit()
+    {
+        if (!sr) sr = GetComponent<SpriteRenderer>();
+        if (mpb == null) mpb = new MaterialPropertyBlock();
+        if (_MainTex_ST == 0) _MainTex_ST = Shader.PropertyToID("_MainTex_ST"); // cambia si tu shader usa _BaseMap_ST
+        if (!cam && Camera.main) cam = Camera.main.transform;
+    }
 
     void Awake()
     {
@@ -36,25 +43,27 @@ public class ParallaxUVLayer2D : MonoBehaviour
     {
         EnsureInit();
         Reanchor();
-        Apply(); // escribe el ST inicial
+        Apply();
     }
 
     void OnValidate()
     {
-        EnsureInit();     // <- clave: mpb nunca nulo en editor
-        CacheBounds();
-        Apply();
+        EnsureInit(); // <- evita ArgumentNull en editor
+        if (sr) { CacheBounds(); Apply(); }
     }
 
     void LateUpdate()
     {
-        if (!cam) { if (Camera.main) cam = Camera.main.transform; else return; }
+        if (!cam) return;
 
+        // auto-scroll (si lo usas)
         if (scrollSpeed.sqrMagnitude > 0f)
             runningOffset += scrollSpeed * Time.deltaTime;
 
+        // Delta de cámara desde el anclaje
         Vector3 delta = cam.position - camStart;
 
+        // Conversión mundo->UV: 1 unidad de mundo equivale a (tiling / tamaño_en_mundo)
         float uvPerUnitX = (widthWorld > 1e-6f) ? (tiling.x / widthWorld) : 0f;
         float uvPerUnitY = (heightWorld > 1e-6f) ? (tiling.y / heightWorld) : 0f;
 
@@ -65,7 +74,11 @@ public class ParallaxUVLayer2D : MonoBehaviour
 
         Vector2 finalOffset = offset + runningOffset + parallaxUV;
 
-        Apply(finalOffset);
+        // Escribe _MainTex_ST: (xy = tiling, zw = offset)
+        EnsureInit();
+        sr.GetPropertyBlock(mpb);
+        mpb.SetVector(_MainTex_ST, new Vector4(tiling.x, tiling.y, finalOffset.x, finalOffset.y));
+        sr.SetPropertyBlock(mpb);
     }
 
     public void Reanchor()
@@ -86,23 +99,12 @@ public class ParallaxUVLayer2D : MonoBehaviour
         }
     }
 
-    private void EnsureInit()
-    {
-        if (!sr) sr = GetComponent<SpriteRenderer>();
-        if (mpb == null) mpb = new MaterialPropertyBlock();
-        if (_MainTex_ST == 0) _MainTex_ST = Shader.PropertyToID("_MainTex_ST"); // cambia a _BaseMap_ST si tu shader usa ese
-        if (!cam && Camera.main) cam = Camera.main.transform;
-    }
-
-    private void Apply() => Apply(offset);
-
-    private void Apply(Vector2 uvOffset)
+    private void Apply()
     {
         if (!sr) return;
         EnsureInit();
-
-        mpb.Clear();
-        mpb.SetVector(_MainTex_ST, new Vector4(tiling.x, tiling.y, uvOffset.x, uvOffset.y));
+        sr.GetPropertyBlock(mpb);
+        mpb.SetVector(_MainTex_ST, new Vector4(tiling.x, tiling.y, offset.x, offset.y));
         sr.SetPropertyBlock(mpb);
     }
 }
