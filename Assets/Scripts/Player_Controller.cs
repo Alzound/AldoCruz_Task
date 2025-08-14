@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using static UnityEngine.Timeline.DirectorControlPlayable;
 
@@ -27,8 +29,8 @@ public class Player_Controller : MonoBehaviour
 
     [Header("Basic properties")]
     float currentSpeed;
-    float normalSpeed = 5f;
-    float runSpeed = 8f;
+    [SerializeField] float normalSpeed = 5f;
+    [SerializeField] float runSpeed = 8f;
 
     [Header("Jump properties")]
     [SerializeField] private float jumpForce = 7f;
@@ -187,6 +189,55 @@ public class Player_Controller : MonoBehaviour
 
         player_Animator.CrossFade(newState, 0.1f);
         currentState = newState;
+    }
+    #endregion
+
+    #region Events
+    public void TriggerItemEvent(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                OnUseItem1(); 
+                break;
+            case 1:
+                OnUseItem2(); 
+                break;
+            default:
+                Debug.LogWarning("Invalid item index: " + index);
+                break;
+        }
+    }
+
+    private void OnUseItem1()
+    {
+        normalSpeed = 12f;
+        runSpeed = 15f;
+        StartCoroutine(ReturnValuesToNormal(15f, 1));
+    }
+
+    private void OnUseItem2()
+    {
+        jumpForce = 15f;    
+        StartCoroutine(ReturnValuesToNormal(10f, 2));
+    }
+
+    IEnumerator ReturnValuesToNormal(float duration, int index)
+    {
+        yield return new WaitForSeconds(duration);
+        switch(index)
+        {
+            case 1:
+                normalSpeed = 5f;
+                runSpeed = 8f;
+                break;
+            case 2:
+                jumpForce = 7f;
+                break;
+            default:
+                Debug.LogWarning("Invalid index for resetting values: " + index);
+                break;
+        }
     }
     #endregion
 }

@@ -5,14 +5,13 @@ public class Player_UIPopUp : MonoBehaviour
 {
     [Header("UI (Burbuja)")]
     [SerializeField] private Canvas bubbleCanvas; 
-    [SerializeField] private float bubbleTime = 3f;
 
     private void Awake()
     {
         bubbleCanvas = GetComponentInChildren<Canvas>();
         if (bubbleCanvas) bubbleCanvas.gameObject.SetActive(false);
     }
-
+    //Activates or deactivates the pop up dialogue bubble. 
     public void TooglePopUpActive()
     {
         bubbleCanvas.gameObject.SetActive(true);
