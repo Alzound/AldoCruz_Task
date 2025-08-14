@@ -9,7 +9,14 @@
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <!-- tabindex permite enfocar el canvas para recibir input -->
+      <canvas id="unity-canvas" width="960" height="600" tabindex="0"></canvas>
+      <!-- Enfocar el canvas al hacer click (sin declarar variables nuevas) -->
+      <script>
+        document.getElementById('unity-canvas')
+          .addEventListener('click', function(){ this.focus(); });
+      </script>
+
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -23,9 +30,12 @@
         <div id="unity-build-title">AldoCruz_Task</div>
       </div>
     </div>
+
     <script>
+      // ÚNICA declaración de canvas
       var canvas = document.querySelector("#unity-canvas");
 
+      // Banner de avisos/errores
       function unityShowBanner(msg, type) {
         var warningBanner = document.querySelector("#unity-warning");
         function updateBannerVisibility() {
@@ -45,29 +55,27 @@
         updateBannerVisibility();
       }
 
-      var buildUrl = "Build";
+      var buildUrl  = "Build";
       var loaderUrl = buildUrl + "/Build.loader.js";
+
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/Build.data.unityweb",
+        dataUrl:      buildUrl + "/Build.data.unityweb",
         frameworkUrl: buildUrl + "/Build.framework.js.unityweb",
-        codeUrl: buildUrl + "/Build.wasm.unityweb",
+        codeUrl:      buildUrl + "/Build.wasm.unityweb",
 
-        // NUEVO: propiedad requerida por algunos loader.js recientes.
-        // Parche compatible: apuntar a cualquier recurso válido (p. ej. el .data).
-        // Si tienes un worker real, usa: buildUrl + "/Build.worker.js.unityweb"
-        workerUrl: buildUrl + "/Build.data.unityweb",
+        // Requerido por algunos loader.js recientes:
+        // Si tienes un worker real, cámbialo a buildUrl + "/Build.worker.js.unityweb"
+        workerUrl:    buildUrl + "/Build.data.unityweb",
 
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "AldoCruz_Task",
         productVersion: "1.0",
-        showBanner: unityShowBanner,
+        showBanner: unityShowBanner
       };
 
-      // config.matchWebGLToCanvasSize = false;
-      // config.autoSyncPersistentDataPath = true;
-
+      // Estilos mobile vs desktop
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         var meta = document.createElement('meta');
         meta.name = 'viewport';
@@ -75,7 +83,7 @@
         document.getElementsByTagName('head')[0].appendChild(meta);
         document.querySelector("#unity-container").className = "unity-mobile";
         canvas.className = "unity-mobile";
-        // config.devicePixelRatio = 1;
+        // config.devicePixelRatio = 1; // opcional
       } else {
         canvas.style.width = "960px";
         canvas.style.height = "600px";
@@ -83,6 +91,7 @@
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
+      // Carga del loader y bootstrap de Unity
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
@@ -97,7 +106,6 @@
           alert(message);
         });
       };
-
       document.body.appendChild(script);
     </script>
   </body>
