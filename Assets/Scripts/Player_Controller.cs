@@ -72,6 +72,9 @@ public class Player_Controller : MonoBehaviour
 
         interact.performed += InteractAction;
         interact.canceled += InteractAction;
+
+        pause.performed += PauseAction;
+        pause.canceled += PauseAction;
         #endregion
     }
 
@@ -88,6 +91,9 @@ public class Player_Controller : MonoBehaviour
 
         interact.performed -= InteractAction;
         interact.canceled -= InteractAction;
+
+        pause.performed -= PauseAction;
+        pause.canceled -= PauseAction;
         #endregion
     }
 
@@ -154,7 +160,17 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
-    private void PauseAction(InputAction.CallbackContext context) { }
+    private void PauseAction(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            var PM = Pause_Menu.instance;
+            PM.gameObject.SetActive(true); 
+            Time.timeScale = 0f; 
+        }
+        
+
+    }
     #endregion
 
     #region GRAVITY

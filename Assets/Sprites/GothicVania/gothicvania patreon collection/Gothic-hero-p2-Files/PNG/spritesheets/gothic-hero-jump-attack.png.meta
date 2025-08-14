@@ -111,6 +111,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -259,7 +272,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gothic-hero-jump-attack_0: -6113549204660553705
+      gothic-hero-jump-attack_1: -8204674525946637198
+      gothic-hero-jump-attack_2: 6632020594020335299
+      gothic-hero-jump-attack_3: -287039645292524985
+      gothic-hero-jump-attack_4: -2176731147556703616
+      gothic-hero-jump-attack_5: -3328515930372186382
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

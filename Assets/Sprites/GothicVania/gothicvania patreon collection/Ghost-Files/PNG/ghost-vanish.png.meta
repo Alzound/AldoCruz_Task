@@ -114,6 +114,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -284,7 +297,14 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ghost-vanish_0: -1663459301286162585
+      ghost-vanish_1: 3452071338178816257
+      ghost-vanish_2: -6159117982315714490
+      ghost-vanish_3: 1549415279476445921
+      ghost-vanish_4: 3860431286593161498
+      ghost-vanish_5: -2445846010109057700
+      ghost-vanish_6: 3195711470213510980
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

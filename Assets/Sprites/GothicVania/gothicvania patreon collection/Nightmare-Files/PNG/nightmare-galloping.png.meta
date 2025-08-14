@@ -120,6 +120,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -334,7 +347,16 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      nightmare-galloping_0: 4926131633840504183
+      nightmare-galloping_1: -3224577081419187643
+      nightmare-galloping_2: 1617726840921898482
+      nightmare-galloping_3: 8060041809488466418
+      nightmare-galloping_4: 2335775811206459273
+      nightmare-galloping_5: 4463436064095493352
+      nightmare-galloping_6: -8422885080058932615
+      nightmare-galloping_7: -3653647979802693612
+      nightmare-galloping_8: -6797552757214914380
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -4,14 +4,27 @@ using UnityEngine.InputSystem;
 
 public class Menu : MonoBehaviour
 {
+    [Header("Menu")]
     Animator animator;
-    AnimationClip animationClip; 
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     public void StartGame()
     {
         Debug.Log("Start Game");
-        Player_Controller.instance.gameObject.GetComponent<PlayerInput>().enabled = true;
-        //animator.Play(); 
+
+        animator.SetBool("play", true);  
+
+    }
+
+    public void ActivatePlayer()
+    {
+        var PC = Player_Controller.instance;
+        PC.gameObject.GetComponent<Player_Controller>().enabled = true;
+        PC.gameObject.GetComponent<Toogle_Inventory>().ToggleInventory();
     }
 
     public void QuitGame()

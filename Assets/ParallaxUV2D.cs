@@ -1,21 +1,37 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-[ExecuteAlways]
-[RequireComponent(typeof(Renderer))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class ParallaxUV2D : MonoBehaviour
 {
-    [SerializeField] private Vector2 movVelocity; 
-    private Vector2 _uvOffset;
-    private Material _material;
+    [SerializeField] Vector2 movVelocity = new Vector2(0.1f, 0f);
 
-    private void Awake()
+    static readonly int UV_OFFSET = Shader.PropertyToID("_UVOffset");
+    SpriteRenderer sr;
+    Material mat;           // instancia propia en Play
+    Rigidbody2D rb;
+    Vector2 uv;             // acumulador local
+
+    void Start()
     {
-        _material = GetComponent<SpriteRenderer>().material;
+        sr = GetComponent<SpriteRenderer>();
+        mat = new Material(sr.sharedMaterial);   // instancia (sin tocar el compartido)
+        sr.sharedMaterial = mat;
+
+        var pc = Player_Controller.instance;
+        if (pc) rb = pc.GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    void Update()
     {
-        _uvOffset = (Player_Controller.instance.gameObject.GetComponent<Rigidbody2D>().linearVelocity.x * 0.1f) * movVelocity * Time.deltaTime;
-        _material.mainTextureOffset += _uvOffset;
+        if (!mat || !rb) return;
+        Debug.Log("Parallax"); 
+        uv += rb.linearVelocity.x * 0.1f * movVelocity * Time.deltaTime; // acumula
+        mat.SetVector("_UVOffset", uv);  // <-- mueve _UVOffset del shader
+    }
+
+    void OnDestroy()
+    {
+        if (mat) Destroy(mat);
     }
 }
+

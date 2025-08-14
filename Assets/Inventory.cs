@@ -15,6 +15,11 @@ public class Inventory : MonoBehaviour
     [Min(0)] public int capacity = 0;              // arranca en 0
     [SerializeField] private List<ItemStack> slots; // arranca vacía
 
+    // SAVE: configuración de guardado/carga
+    [Header("Save/Load")]
+    [SerializeField] private bool autoSave = true;  // guarda tras cada cambio
+    const string SAVE_KEY = "INV_V1";               // clave en PlayerPrefs
+
     [Header("UI")]
     [SerializeField] private RectTransform gridParent; // UI parent container. 
     [SerializeField] private SlotUI slotPrefab;        // prefab of the slot UI.
@@ -33,6 +38,12 @@ public class Inventory : MonoBehaviour
         slots ??= new List<ItemStack>();
         capacity = slots.Count; // 0
         nextX = startX;
+    }
+
+    // SAVE: carga al iniciar (si no hay guardado, no crea nada).
+    void Start()
+    {
+        LoadFromPrefs();
     }
 
     public ItemStack Get(int index) => slots[index];
@@ -102,12 +113,15 @@ public class Inventory : MonoBehaviour
             {
                 var rt = slotUIs[j].GetComponent<RectTransform>();
                 var pos = rt.anchoredPosition;
-                rt.anchoredPosition = new (pos.x - stepX, pos.y); // 150 units to the left - x.
+                rt.anchoredPosition = new(pos.x - stepX, pos.y); // 150 units to the left - x.
                 slotUIs[j].SetIndex(j);                                   //Updates index in SlotUI
             }
 
             //Returns the nextX to the left, so the next slot will be positioned correctly.
             nextX -= stepX;
+
+            // SAVE: guardar tras borrar el slot
+            if (autoSave) SaveToPrefs();
         }
         else
         {
@@ -137,6 +151,7 @@ public class Inventory : MonoBehaviour
         {
             Set(to, a);
             Set(from, ItemStack.Empty);
+            // SAVE: mover simple también guarda (Set ya guarda)
             return;
         }
 
@@ -150,12 +165,14 @@ public class Inventory : MonoBehaviour
                 a.amount -= move;
                 Set(to, b);
                 Set(from, a.amount <= 0 ? ItemStack.Empty : a);
+                // SAVE: merge guarda vía Set
                 return;
             }
         }
 
         Set(to, a);
         Set(from, b);
+        // SAVE: swap guarda vía Set
     }
 
     //It creates a new UI slot and adds it to the data list, also moving them with the parameter of startX.
@@ -181,12 +198,17 @@ public class Inventory : MonoBehaviour
         ui.Bind(this, i);
         ui.Render(slots[i]); //Empty for now. 
         slotUIs.Add(ui);
+
+        // SAVE: también persistimos la creación del nuevo slot vacío
+        if (autoSave) SaveToPrefs();
     }
 
     void Set(int index, ItemStack s)
     {
         slots[index] = s;
         UpdateSlotUI(index);
+        // SAVE: guarda cada cambio de slot
+        if (autoSave) SaveToPrefs();
     }
 
     void UpdateSlotUI(int index)
@@ -215,7 +237,11 @@ public class Inventory : MonoBehaviour
 
         slots.RemoveAt(lastIndex);
         capacity = slots.Count;
+
+        // SAVE: guardar tras quitar el último slot
+        if (autoSave) SaveToPrefs();
     }
+
     public int GetNearestIndex(Vector2 screenPos)
     {
         if (slotUIs.Count == 0) return 0;
@@ -237,5 +263,73 @@ public class Inventory : MonoBehaviour
             if (d < best) { best = d; nearest = i; }
         }
         return nearest;
+    }
+
+    // ===================== SAVE / LOAD (simple por PlayerPrefs) =====================
+
+    [Serializable] class SlotDTO { public string itemName; public int amount; } // slot por slot
+    [Serializable] class InventoryDTO { public List<SlotDTO> slots = new(); }   // lista completa
+
+    // SAVE: guardar TODOS los slots (incluidos vacíos) para conservar posiciones
+    public void SaveToPrefs()
+    {
+        var data = new InventoryDTO();
+        for (int i = 0; i < slots.Count; i++)
+        {
+            var s = slots[i];
+            data.slots.Add(new SlotDTO
+            {
+                itemName = s.IsEmpty ? "" : s.item.name,
+                amount = s.IsEmpty ? 0 : s.amount
+            });
+        }
+        var json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString(SAVE_KEY, json);
+        PlayerPrefs.Save();
+        Debug.Log($"[Inventory] Saved {slots.Count} slots to PlayerPrefs ({SAVE_KEY}), bytes: {json.Length}");
+    }
+
+    public void LoadFromPrefs()
+    {
+        var json = PlayerPrefs.GetString(SAVE_KEY, "");
+        if (string.IsNullOrEmpty(json)) { Debug.Log("[Inventory] No save found"); return; }
+
+        var data = JsonUtility.FromJson<InventoryDTO>(json);
+        if (data == null || data.slots == null) { Debug.LogWarning("[Inventory] Corrupt save"); return; }
+
+        ClearAllUIAndData();
+
+        for (int i = 0; i < data.slots.Count; i++)
+        {
+            CreateOneUISlot();
+            var dto = data.slots[i];
+
+            if (!string.IsNullOrEmpty(dto.itemName) && dto.amount > 0)
+            {
+                var so = Item_DB.Find(dto.itemName); // <— nombre correcto
+                if (so != null)
+                {
+                    slots[i] = new ItemStack { item = so, amount = dto.amount };
+                    UpdateSlotUI(i);
+                }
+                else
+                {
+                    Debug.LogWarning($"[Inventory] Item '{dto.itemName}' no encontrado por ItemDB.");
+                }
+            }
+        }
+    }
+
+
+    // SAVE: limpiar todo para recargar
+    private void ClearAllUIAndData()
+    {
+        for (int i = gridParent.childCount - 1; i >= 0; i--)
+            Destroy(gridParent.GetChild(i).gameObject);
+
+        slotUIs.Clear();
+        slots.Clear();
+        capacity = 0;
+        nextX = startX;
     }
 }

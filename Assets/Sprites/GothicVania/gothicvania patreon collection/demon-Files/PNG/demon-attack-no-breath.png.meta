@@ -117,6 +117,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -309,7 +322,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      demon-attack-no-breath_0: 1119696102202878521
+      demon-attack-no-breath_1: -3021583118361910209
+      demon-attack-no-breath_2: -3758352173003776340
+      demon-attack-no-breath_3: 4440047075060365722
+      demon-attack-no-breath_4: 2775838402845532889
+      demon-attack-no-breath_5: 158564056746921763
+      demon-attack-no-breath_6: -5957889397408292130
+      demon-attack-no-breath_7: 254697773495596123
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

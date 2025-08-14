@@ -162,6 +162,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -684,7 +697,30 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      demon-attack_0: 4830101959132194629
+      demon-attack_1: -4271147063164771560
+      demon-attack_10: 3732180292136803729
+      demon-attack_11: -443954170725275564
+      demon-attack_12: -1235301770620420358
+      demon-attack_13: 8765156206793520063
+      demon-attack_14: 6541704209189053201
+      demon-attack_15: 5228986371281260502
+      demon-attack_16: -3856800151587923306
+      demon-attack_17: -5727148332921510141
+      demon-attack_18: -4475690379251183040
+      demon-attack_19: -2532999805667386544
+      demon-attack_2: -7799362553759336465
+      demon-attack_20: -3617648710701913102
+      demon-attack_21: 2529491223677356976
+      demon-attack_22: 5998294966133288011
+      demon-attack_3: 3464098051191881274
+      demon-attack_4: -485573400809545533
+      demon-attack_5: 3534393129997317530
+      demon-attack_6: 7574423355230237855
+      demon-attack_7: -5612541687579396147
+      demon-attack_8: -929153436317632263
+      demon-attack_9: 6143293567109672340
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
