@@ -9,13 +9,8 @@
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <!-- ✅ tabindex="0" para poder enfocar el canvas -->
+      <!-- tabindex permite enfocar el canvas para recibir input -->
       <canvas id="unity-canvas" width="960" height="600" tabindex="0"></canvas>
-      <!-- ✅ Enfocar canvas al hacer click (necesario para input en WebGL) -->
-      <script>
-        const canvas = document.querySelector('#unity-canvas');
-        canvas.addEventListener('click', () => canvas.focus());
-      </script>
 
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
@@ -32,7 +27,10 @@
     </div>
 
     <script>
+      // --- SOLO UNA declaración de canvas ---
       var canvas = document.querySelector("#unity-canvas");
+      // Enfocar el canvas al hacer click (necesario para teclado en WebGL)
+      canvas.addEventListener('click', () => canvas.focus());
 
       function unityShowBanner(msg, type) {
         var warningBanner = document.querySelector("#unity-warning");
@@ -58,13 +56,12 @@
 
       var config = {
         arguments: [],
-        dataUrl:       buildUrl + "/Build.data.unityweb",
-        frameworkUrl:  buildUrl + "/Build.framework.js.unityweb",
-        codeUrl:       buildUrl + "/Build.wasm.unityweb",
+        dataUrl:      buildUrl + "/Build.data.unityweb",
+        frameworkUrl: buildUrl + "/Build.framework.js.unityweb",
+        codeUrl:      buildUrl + "/Build.wasm.unityweb",
 
-        // 🔧 Parche para loaders recientes que esperan workerUrl:
-        // Si tienes un worker real, cámbialo a buildUrl + "/Build.worker.js.unityweb"
-        workerUrl:     buildUrl + "/Build.data.unityweb",
+        // Si tienes un worker real, usa: buildUrl + "/Build.worker.js.unityweb"
+        workerUrl:    buildUrl + "/Build.data.unityweb",
 
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
