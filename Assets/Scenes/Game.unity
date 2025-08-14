@@ -11625,6 +11625,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2167019258258184152, guid: 1a012d60f0125b9449992487e4fddb8f, type: 3}
+      propertyPath: spriteFacingLeft
+      value: 
+      objectReference: {fileID: 2453471184611628814, guid: 35d021d6656601a4f8c05af1c734587b, type: 3}
+    - target: {fileID: 2167019258258184152, guid: 1a012d60f0125b9449992487e4fddb8f, type: 3}
+      propertyPath: spriteFacingRight
+      value: 
+      objectReference: {fileID: 2453471184611628814, guid: 558faee0565fb08439b63b8d58fdb473, type: 3}
+    - target: {fileID: 2707723414406149337, guid: 1a012d60f0125b9449992487e4fddb8f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6018028801338872283, guid: 1a012d60f0125b9449992487e4fddb8f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

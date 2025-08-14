@@ -4,10 +4,12 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using static UnityEngine.Timeline.DirectorControlPlayable;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class Player_Controller : MonoBehaviour
 {
     [Header("Player Instance")]
     public static Player_Controller instance;
+
     [Header("Player Interaction")]
     [SerializeField] private Player_Interaction interaction;
 
@@ -19,11 +21,16 @@ public class Player_Controller : MonoBehaviour
     [Header("Rigidbody 2D")]
     private Rigidbody2D rb;
 
-    [Header("Animator")]
-    [SerializeField] private Animator player_Animator;
-    public string currentState;
-    private const string IDLE_RIGHT = "Player_IdleRight", IDLE_LEFT = "Player_IdleLeft";
-    private const string RUN_RIGHT = "Player_RunRight", RUN_LEFT = "Player_RunLeft";
+    [Header("Sprite")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Sprite spriteFacingRight;
+    [SerializeField] private Sprite spriteFacingLeft;
+
+    // [Header("Animator")]
+    // [SerializeField] private Animator player_Animator;
+    // public string currentState;
+    // private const string IDLE_RIGHT = "Player_IdleRight", IDLE_LEFT = "Player_IdleLeft";
+    // private const string RUN_RIGHT = "Player_RunRight", RUN_LEFT = "Player_RunLeft";
 
     [Header("Basic properties")]
     float currentSpeed;
@@ -44,11 +51,12 @@ public class Player_Controller : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        playerInput = GetComponent<PlayerInput>();
+        if (!playerInput) playerInput = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody2D>();
 
         interaction = GetComponentInChildren<Player_Interaction>();
-        player_Animator = GetComponent<Animator>();
+
+        if (!spriteRenderer) spriteRenderer = GetComponent<SpriteRenderer>();
 
         #region InputSystem_ActionsBinding
         move = playerInput.actions["Move"];
@@ -59,6 +67,7 @@ public class Player_Controller : MonoBehaviour
         #endregion
 
         currentSpeed = normalSpeed;
+        UpdateFacingSprite();
     }
 
     private void OnEnable()
@@ -110,30 +119,32 @@ public class Player_Controller : MonoBehaviour
             if (Mathf.Abs(x) < X_DEADZONE)
             {
                 isMoving = false;
-                ChangeAnimationState(facing > 0 ? IDLE_RIGHT : IDLE_LEFT);
+                // ChangeAnimationState(facing > 0 ? IDLE_RIGHT : IDLE_LEFT);
             }
             else
             {
                 if (x > 0f)
                 {
-                    ChangeAnimationState(RUN_RIGHT);
+                    // ChangeAnimationState(RUN_RIGHT);
                     facing = 1;
                 }
                 else
                 {
-                    ChangeAnimationState(RUN_LEFT);
+                    // ChangeAnimationState(RUN_LEFT);
                     facing = -1;
                 }
                 isMoving = true;
             }
 
+            UpdateFacingSprite();
             currentSpeed = isRunning ? runSpeed : normalSpeed;
         }
         else if (context.canceled)
         {
-            ChangeAnimationState(facing > 0 ? IDLE_RIGHT : IDLE_LEFT);
+            // ChangeAnimationState(facing > 0 ? IDLE_RIGHT : IDLE_LEFT);
             dir = Vector2.zero;
             isMoving = false;
+            UpdateFacingSprite();
         }
     }
 
@@ -213,12 +224,27 @@ public class Player_Controller : MonoBehaviour
     #region Animation
     private void ChangeAnimationState(string newState)
     {
-        if (currentState == newState) return;
-
-        player_Animator.CrossFade(newState, 0.1f);
-        currentState = newState;
+        // if (currentState == newState) return;
+        // player_Animator.CrossFade(newState, 0.1f);
+        // currentState = newState;
     }
     #endregion
+
+    void UpdateFacingSprite()
+    {
+        if (!spriteRenderer) return;
+
+        if (facing >= 0)
+        {
+            if (spriteFacingRight) spriteRenderer.sprite = spriteFacingRight;
+            else spriteRenderer.flipX = false;
+        }
+        else
+        {
+            if (spriteFacingLeft) spriteRenderer.sprite = spriteFacingLeft;
+            else spriteRenderer.flipX = true;
+        }
+    }
 
     #region Events
     public void TriggerItemEvent(int index)
@@ -257,7 +283,6 @@ public class Player_Controller : MonoBehaviour
         switch (index)
         {
             case 1:
-  
                 normalSpeed = 5f;
                 runSpeed = 8f;
                 break;

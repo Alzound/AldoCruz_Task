@@ -23,6 +23,7 @@ public class Menu : MonoBehaviour
     public void ActivatePlayer()
     {
         var PC = Player_Controller.instance;
+        PC.gameObject.GetComponent<PlayerInput>().enabled = true;
         PC.gameObject.GetComponent<Player_Controller>().enabled = true;
         PC.gameObject.GetComponent<Toogle_Inventory>().ToggleInventory();
     }
