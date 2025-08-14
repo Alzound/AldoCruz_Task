@@ -9,9 +9,7 @@
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <!-- tabindex permite enfocar el canvas para recibir input -->
-      <canvas id="unity-canvas" width="960" height="600" tabindex="0"></canvas>
-
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -25,12 +23,8 @@
         <div id="unity-build-title">AldoCruz_Task</div>
       </div>
     </div>
-
     <script>
-      // --- SOLO UNA declaración de canvas ---
       var canvas = document.querySelector("#unity-canvas");
-      // Enfocar el canvas al hacer click (necesario para teclado en WebGL)
-      canvas.addEventListener('click', () => canvas.focus());
 
       function unityShowBanner(msg, type) {
         var warningBanner = document.querySelector("#unity-warning");
@@ -51,24 +45,28 @@
         updateBannerVisibility();
       }
 
-      var buildUrl  = "Build";
+      var buildUrl = "Build";
       var loaderUrl = buildUrl + "/Build.loader.js";
-
       var config = {
         arguments: [],
-        dataUrl:      buildUrl + "/Build.data.unityweb",
+        dataUrl: buildUrl + "/Build.data.unityweb",
         frameworkUrl: buildUrl + "/Build.framework.js.unityweb",
-        codeUrl:      buildUrl + "/Build.wasm.unityweb",
+        codeUrl: buildUrl + "/Build.wasm.unityweb",
 
+        // NUEVO: propiedad requerida por algunos loader.js recientes.
+        // Parche compatible: apuntar a cualquier recurso válido (p. ej. el .data).
         // Si tienes un worker real, usa: buildUrl + "/Build.worker.js.unityweb"
-        workerUrl:    buildUrl + "/Build.data.unityweb",
+        workerUrl: buildUrl + "/Build.data.unityweb",
 
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "AldoCruz_Task",
         productVersion: "1.0",
-        showBanner: unityShowBanner
+        showBanner: unityShowBanner,
       };
+
+      // config.matchWebGLToCanvasSize = false;
+      // config.autoSyncPersistentDataPath = true;
 
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         var meta = document.createElement('meta');
@@ -77,7 +75,7 @@
         document.getElementsByTagName('head')[0].appendChild(meta);
         document.querySelector("#unity-container").className = "unity-mobile";
         canvas.className = "unity-mobile";
-        // config.devicePixelRatio = 1; // opcional
+        // config.devicePixelRatio = 1;
       } else {
         canvas.style.width = "960px";
         canvas.style.height = "600px";
@@ -99,6 +97,7 @@
           alert(message);
         });
       };
+
       document.body.appendChild(script);
     </script>
   </body>
